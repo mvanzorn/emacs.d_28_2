@@ -1,0 +1,1 @@
+("~/cchat-app/" "~/.emacs.d/" "~/cchat-app/node_modules/meteor-node-stubs/" "~/conferences/" "~/ilwdata/")

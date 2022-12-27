@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: accordion
+# key: accordion
+# group: twitter-bootstrap
+# binding: direct-keybinding
+# --
+<!-- Begin accordion -->
+<div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne $1">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne $2" aria-expanded="true" aria-controls="collapseOne $3">
+        $4 Accordion Item #1
+      </button>
+    </h2>
+    <div id="collapseOne $5" class="accordion-collapse collapse show" aria-labelledby="headingOne $6" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+				$7
+	</div>
+    </div>
+  </div>
+</div>
+<!-- End accordion -->

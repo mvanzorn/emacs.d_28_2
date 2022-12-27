@@ -1,0 +1,462 @@
+;; 	 (pr (project-current nil (concat "~/Projects/" (ido-completing-read "Select projec;;: " project)))))
+;; 	 (dirs (project-roots pr))
+;;   (project-find-file-in (thing-at-point 'filename) dirs pr)))
+
+;; (luke/select-project)
+
+(defun luke/grep-in-project ()
+  (interactive)
+  (let* (
+	(current-project (project-current t))
+	(current-project-root (car (project-roots current-project)))
+	(search-term
+	 (read-from-minibuffer "Search term: ")))
+    (rgrep search-term "*" current-project-root)
+    ))
+
+
+;; Particles
+;; https://github.com/elizagamedev/power-mode.el
+;; (setq power-mode-shake-strength nil)
+;; (setq power-mode-streak-shake-threshold nil)
+;; (use-package power-mode
+;;   :load-path "packages"
+;;   :init
+;;   (add-hook 'after-init-hook #'power-mode))
+
+
+;; Preferred font
+;; Load pragmatapro-lig.el
+;;(add-to-list 'load-path "/home/luke/emacs/custom-packages/emacs-pragmatapro-ligatures")
+;;(require 'pragmatapro-lig)
+;;(add-to-list 'default-frame-alist '(font . "PragmataPro Mono Liga-10"))
+;; Enable pragmatapro-lig-mode for specific modes
+;;(add-hook 'text-mode-hook 'pragmatapro-lig-mode)
+;;(add-hook 'prog-mode-hook 'pragmatapro-lig-mode)
+;; or globally
+;;(pragmatapro-lig-global-mode)
+;;(setq line-spacing 0)
+
+;; General settings
+(delete-selection-mode t)
+(tool-bar-mode -1)
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq auto-save-default nil)
+(setq make-backup-files nil)
+(setq create-lockfiles nil)
+(global-display-line-numbers-mode)
+(global-prettify-symbols-mode 1)
+;;(global-hl-line-mode 1)
+
+(setq tab-line-close-button-show nil)
+(setq tab-line-tabs-function 'tab-line-tabs-mode-buffers)
+(global-tab-line-mode t)
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+
+(when (eq window-system 'mac)n``
+	(mac-auto-operator-composition-mode))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
+
+(use-package add-node-modules-path
+  :ensure t)
+
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+(use-package expand-region
+  :ensure t
+  :bind (("C-=" . er/expand-region)
+	 ("C--" . er/contract-region)))
+
+
+;; json-mode
+(use-package json-mode
+  :ensure t)
+
+;; move-text
+(use-package move-text
+	:ensure t)
+(move-text-default-bindings)
+
+
+;;(use-package pretty-hydra
+;;	:ensure t)
+(use-package ivy-hydra)
+
+(use-package major-mode-hydra
+    :bind
+    ("C-M-SPC" . major-mode-hydra)
+    :config
+    (major-mode-hydra-define org-mode
+      ()
+      ("Tools"
+       (("l" org-lint "lint")))))
+
+
+;; Hydra Posframe 3-16-2022
+;; NOTE: hydra and posframe are required
+(use-package hydra-posframe
+	:load-path "~/.emacs.d/packages"
+  :hook (after-init . hydra-posframe-enable))
+
+
+
+
+
+;; Occur customizations plus hydra 3-16-2022
+;; https://github.com/abo-abo/hydra/wiki/Emacs
+
+(defun occur-dwim ()
+  "Call `occur' with a sane default, chosen as the thing under point or selected region"
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+;; Keeps focus on *Occur* window, even when when target is visited via RETURN key.
+;; See hydra-occur-dwim for more options.
+(defadvice occur-mode-goto-occurrence (after occur-mode-goto-occurrence-advice activate)
+  (other-window 1)
+  (hydra-occur-dwim/body))
+
+;; Focus on *Occur* window right away.
+(add-hook 'occur-hook (lambda () (other-window 1)))
+
+(defun reattach-occur ()
+  (if (get-buffer "*Occur*")
+    (switch-to-buffer-other-window "*Occur*")
+    (hydra-occur-dwim/body) ))
+
+;; Used in conjunction with occur-mode-goto-occurrence-advice this helps keep
+;; focus on the *Occur* window and hides upon request in case needed later.
+(defhydra hydra-occur-dwim ()
+  "Occur mode"
+  ("o" occur-dwim "Start occur-dwim" :color red)
+  ("j" occur-next "Next" :color red)
+  ("k" occur-prev "Prev":color red)
+  ("h" delete-window "Hide" :color blue)
+  ("r" (reattach-occur) "Re-attach" :color red))
+
+(global-set-key (kbd "C-x o") 'hydra-occur-dwim/body)
+
+;; End occur hydra
+
+;; ORG-ROAM 3-16-2022
+;; https://github.com/org-roam/org-roam
+
+(setq org-directory (concat (getenv "HOME") "/Documents/notes/"))
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory (file-truename "/path/to/org-files/"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
+
+
+
+
+;; web-mode
+(setq-default tab-width 2)
+(setq indent-tabs-mode nil)
+(defun luke/webmode-hook ()
+	"Webmode hooks."
+	(setq web-mode-enable-comment-annotation t)
+	(setq web-mode-markup-indent-offset 2)
+	(setq web-mode-code-indent-offset 2)
+	(setq web-mode-css-indent-offset 2)
+	(setq web-mode-attr-indent-offset 0)
+	(setq web-mode-enable-auto-indentation t)
+	(setq web-mode-enable-auto-closing t)
+	(setq web-mode-enable-auto-pairing t)
+	(setq web-mode-enable-css-colorization t)
+
+
+)
+
+
+(use-package web-mode
+  :ensure t
+  :mode (("\\.jsx?\\'" . web-mode)
+	 ("\\.tsx?\\'" . web-mode)
+	 ("\\.html\\'" . web-mode))
+  :commands web-mode
+  :mode-hydra 
+  ((:title "Web Commands")
+  ("Mode"
+	(
+    ("p" php-mode "PHP Mode")
+    ("w" web-mode "WEB Mode")
+    ("g" html-mode "HTML Mode")
+    ("3" js2-mode "Javascript Mode")
+    ("e" emmet-mode "Emmet Mode" )
+    ("M" emmet-cheat-sheet "Emmet Cheat Sheet")
+    ("P" php-cheat-sheet "PHP Cheat Sheet")
+    ("J" js-cheat-sheet "Javascript Cheat Sheet")
+    ("B" bootstrap-cheat-sheet "Bootstrap Cheat Sheet")
+    ("W" wordpress-cheat-u "Wordpress Cheat Sheet")
+    ("4" css-grid-cheat-sheet "CSS-GRID Cheat Sheet" )
+    ( "r" refresh-chrome "Refresh Chrome")
+);end mode
+"Action"
+(
+    (";" comment-out-region "Comment Out Region" )
+    ("." smart-comment-line "Smart Comment Line" )
+    ("i" insert-yasnippet "Insert Yasnippet" )
+    ("H" helm-emmet "Helm Select Emmet" )
+    ("m" company-web-html "HTML Complete" )
+    ("t" company-complete "Company Complete")
+    ("I" highlight-indent-guides-mode  "Show Indent Guides" :toggle t )
+    ("E" elnode-make-webserver "Make Elnode Server (choose 8028)")
+    ("7" list-elnode-servers "List Elnode Servers")
+    ("6" elnode-stop "Stop Elnode Servers")
+    ("1" elnode-start "Start Elnode Server")
+    ("0" visit-localhost-elnode "Elnode-8028 Local Host")
+    ("8" jump-to-elnode-public "Jump ELNODE PUBLIC (in /emacs)")
+)));end action
+
+
+	:hook (web-mode . luke/webmode-hook)
+)
+
+
+;; company
+(setq company-minimum-prefix-length 1
+      company-idle-delay 0.0)
+(use-package company
+  :ensure t
+  :config (global-company-mode t))
+
+
+;; magit
+(use-package magit
+  :ensure t
+  :bind (
+	 ("C-x g" . magit-status)))
+
+
+;; theme
+;; (use-package modus-themes
+;;   :ensure t
+;;   :init
+;;     (setq modus-themes-syntax '(green-strings yellow-comments)
+;; 	modus-themes-mode-line '(accented borderless)
+;; 	modus-themes-hl-line '(accented))
+    
+;;   (modus-themes-load-themes)
+;;   :config
+;;     (load-theme 'modus-vivendi t))
+
+
+;; DOOM THEMES 3-16-2022
+;; https://github.com/doomemacs/themes#manually
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; (load-theme 'doom-molokai t)	
+	;; (load-theme 'doom-dark+ t)
+	;; (load-theme 'doom-gruvbox t)
+	(load-theme 'doom-peacock t)
+	
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;;(doom-themes-neotree-config)
+  ;; or for treemacs users
+
+	(setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+	 (setq doom-themes-treemacs-enable-variable-pitch nil)
+	;;(setq doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 11))
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
+
+
+;; DOOM modeline 3-16-2022
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
+
+;; When running emacsclient -c this will ensure theme loads
+;; theme
+;;(defvar my:theme 'modus-vivendi)
+;;(defvar my:theme-window-loaded nil)
+;;(defvar my:theme-terminal-loaded nil)
+
+;;(if (daemonp)
+;;    (add-hook 'after-make-frame-functions(lambda (frame)
+;;                       (select-frame frame)
+;;                       (if (window-system frame)
+;;                           (unless my:theme-window-loaded
+;;                             (if my:theme-terminal-loaded
+;;                                 (enable-theme my:theme)
+;;                               (load-theme my:theme t))
+;;                            (setq my:theme-window-loaded t))
+;;                         (unless my:theme-terminal-loaded
+;;                           (if my:theme-window-loaded
+;;                               (enable-theme my:theme)
+;;                             (load-theme my:theme t))
+;;                          (setq my:theme-terminal-loaded t)))))
+
+;;  (progn
+;;    (load-theme my:theme t)
+;;    (if (display-graphic-p)
+;;        (setq my:theme-window-loaded t)
+;;      (setq my:theme-terminal-loaded t))))
+
+
+;; lsp-mode
+(setq lsp-log-io nil) ;; Don't log everything = speed
+(setq lsp-keymap-prefix "C-c l")
+;;(setq lsp-restart 'auto-restart)
+(setq lsp-ui-sideline-show-diagnostics t)
+(setq lsp-ui-sideline-show-hover t)
+(setq lsp-ui-sideline-show-code-actions t)
+(setq lsp-diagnostics-provider :flymake)
+(setq lsp-ui-doc-enable t)
+(setq lsp-ui-doc-position 'at-point)
+(global-set-key (kbd "C-.") #'lsp-ui-peek-find-definitions)
+
+(use-package lsp-mode
+  :ensure t
+  :hook (
+	 (web-mode . lsp-deferred)
+	 (lsp-mode . lsp-enable-which-key-integration)
+	 )
+  :commands lsp-deferred)
+
+
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp))))  ; or lsp-deferred
+
+
+(defun enable-minor-mode (my-pair)
+  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+  (if (buffer-file-name)
+      (if (string-match (car my-pair) buffer-file-name)
+	  (funcall (cdr my-pair)))))
+
+(use-package prettier-js
+  :ensure t)
+(add-hook 'web-mode-hook #'(lambda ()
+                             (enable-minor-mode
+                              '("\\.jsx?\\'" . prettier-js-mode))
+  	  		     (enable-minor-mode
+                              '("\\.tsx?\\'" . prettier-js-mode))))
+
+(eval-after-load 'web-mode
+  '(progn
+     (add-hook 'web-mode-hook #'add-node-modules-path)
+     (add-hook 'web-mode-hook #'prettier-js-mode)))
+
+(setq prettier-js-args '(
+	"--bracket-same-line" "false"
+))
+
+
+(use-package editorconfig
+  :ensure t
+  :config
+  (editorconfig-mode 1))
+
+(use-package npm-mode
+  :ensure t
+  :config
+  (npm-global-mode))
+
+;; Custom functions
+(defun lukewh/kill-buffer ()
+  "Kill the active buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+
+(global-set-key (kbd "C-x K") 'lukewh/kill-buffer)
+
+
+
+;; 2-28-2022 Additions
+(use-package simple
+  :ensure nil
+  :config (column-number-mode +1))
+
+(require 'rainbow-delimiters)
+;;(add-hook 'web-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+(use-package ediff
+  :ensure nil
+  :config
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (setq ediff-split-window-function #'split-window-horizontally))
+
+;; Diff highlighting! 3-13-2022
+;;(use-package diff-hl
+;;  :ensure t)
+
+;;(global-diff-hl-mode)
+
+
+;; Simple modeline, deprecated in favor of doom modeline 
+;; https://github.com/dbordak/telephone-line
+;;(require 'telephone-line)
+;;(telephone-line-mode 1)
+
+(use-package frame
+  :preface
+  (defun ian/set-default-font ()
+    (interactive)
+    (when (member "Iosevka" (font-family-list))
+      (set-face-attribute 'default nil :family "Iosevka"))
+    (set-face-attribute 'default nil
+                        :height 130
+                        :weight 'normal))
+  :ensure nil
+  :config
+  (setq initial-frame-alist '((fullscreen . maximized)))
+  (ian/set-default-font))
+
+
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Iosevka Term" :foundry "UKWN" :slant normal :weight normal :height 121 :width normal)))))

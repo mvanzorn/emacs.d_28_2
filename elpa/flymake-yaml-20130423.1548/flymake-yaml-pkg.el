@@ -1,0 +1,2 @@
+;;; Generated package description from flymake-yaml.el  -*- no-byte-compile: t -*-
+(define-package "flymake-yaml" "20130423.1548" "A flymake handler for YAML" '((flymake-easy "0.1")) :commit "0dd11eed29fe4054ff5b4e06e2c39b4d925d6aae" :authors '(("Yasuyuki Oka" . "yasuyk@gmail.com")) :maintainer '("Yasuyuki Oka" . "yasuyk@gmail.com") :keywords '("yaml") :url "https://github.com/yasuyk/flymake-yaml")

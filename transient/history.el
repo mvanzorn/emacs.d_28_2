@@ -1,0 +1,5 @@
+((dirvish-dispatch nil)
+ (dirvish-quick-access nil)
+ (magit-commit nil)
+ (magit-dispatch nil)
+ (magit-push nil))

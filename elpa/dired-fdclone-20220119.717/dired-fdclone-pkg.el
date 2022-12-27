@@ -1,0 +1,2 @@
+;;; Generated package description from dired-fdclone.el  -*- no-byte-compile: t -*-
+(define-package "dired-fdclone" "20220119.717" "dired functions and settings to mimic FDclone" 'nil :commit "66e337012e72cebd2485f1efca0b2f78dc9c6252" :authors '(("Akinori MUSHA" . "knu@iDaemons.org")) :maintainer '("Akinori MUSHA" . "knu@iDaemons.org") :keywords '("unix" "directories" "dired") :url "https://github.com/knu/dired-fdclone.el")
