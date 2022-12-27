@@ -1029,7 +1029,10 @@
 
 ;; Diff highlighting! 3-13-2022
 (use-package diff-hl
-  :ensure t)
+  :ensure t
+  :custom
+  (diff-hl-margin-mode t)
+  )
 
 (global-diff-hl-mode)
 
@@ -1124,6 +1127,11 @@
 ;;         ("<C-m> M-h" . ace-mc-add-single-cursor)))
 (global-set-key (kbd "C-c m") 'ace-mc-add-multiple-cursors)
 (global-set-key (kbd "C-c s") 'ace-mc-add-single-cursor)
+
+
+(use-package transpose-frame
+	:ensure t
+	:defer 1)
 
 ;;
 ;;
@@ -1272,235 +1280,236 @@
 
 
 ;;;; 3-12-2022
-;;  ;; https://readingworldmagazine.com/emacs/2021-11-14-emacs-how-to-find-just-about-anything-on-your-computer-2/
-;;  ;; Adding counsel,  ivy-rich, swiper
-;;
-;;  (use-package counsel
-;;    :ensure t
-;;    :after ivy
-;;    :config
-;;                                          ; Don't start searches with ^
-;;    (setq ivy-initial-inputs-alist nil)
-;;    (counsel-mode)
-;;                                          ;show org-tags in counsel searches
-;;    (setq counsel-org-headline-display-tags t)
-;;                                          ;show org-todos in counsel searches
-;;    (setq counsel-org-headline-display-todo t)
-;;
-;;    (define-key ivy-switch-buffer-map (kbd "C-d") 'mu-ivy-kill-buffer)
-;;                                          ;ivy-todo calls org-set-tags-command, remap to counsel-org-tag
-;;    (global-set-key [remap org-set-tags-command] #'counsel-org-tag)
-;;
-;;    :bind (
-;;           ([remap describe-function] . counsel-describe-function)
-;;           ([remap describe-command] . helpful-command)
-;;           ([remap describe-variable] . counsel-describe-variable)
-;;           ([remap describe-key] . helpful-key)
-;;           ("M-x" . counsel-M-x)
-;;           ("C-x b" . counsel-switch-buffer)
-;;           ("C-x C-b" . counsel-ibuffer)
-;;           ("C-x C-m" . counsel-imenu) ;headers level 1
-;;           ("C-x C-d" . counsel-bookmarked-directory)
-;;           ;;("C-x f" .  helm-org-rifle-current-buffer)
-;;           ;;("C-x r" .  helm-org-rifle)
-;;           ("C-x C-a" . counsel-rg)
-;;           ("C-x C-r" . counsel-recentf)
-;;           ("C-x C-f" . counsel-find-file)
-;;           ("C-h b" . counsel-descbinds)
-;;           ("M-y" . counsel-yank-pop)
-;;           ("M-SPC" . counsel-shell-history)
-;;           :map minibuffer-local-map
-;;           ("C-r" . 'counsel-minibuffer-history)
-;;           ("C-d" . ivy-switch-buffer-kill); d for delete
-;;           );end bind
-;;    );end counsel
-;;
-;;  ;;(use-package recentf
-;;  ;;  :ensure t)
-;;  ;;(recentf-mode 1)
-;;
-;;  (use-package all-the-icons-ivy-rich
-;;    :ensure t
-;;    :init (all-the-icons-ivy-rich-mode 1))
-;;
-;;  (use-package ivy-rich
-;;    :after (:and ivy counsel)
-;;                                          ;:ensure t
-;;                                          ;:commands (counsel-mode)
-;;    :init
-;;    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-;;    (ivy-rich-mode)
-;;    :config
-;;                                          ;these are david wilsons configurations
-;;    (setq ivy-format-function #'ivy-format-function-line)
-;;    (setq ivy-rich-display-transformers-list
-;;          (plist-put ivy-rich-display-transformers-list
-;;                     'ivy-switch-buffer
-;;                     '(:columns
-;;                       ((ivy-rich-candidate (:width 40))
-;;                        (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right)); return the buffer indicators
-;;                        (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))          ; return the major mode info
-;;                        (ivy-rich-switch-buffer-project (:width 15 :face success))             ; return project name using `projectile'
-;;                        (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))  ; return file path relative to project root or `default-directory' if project is nil
-;;                       :predicate
-;;                       (lambda (cand)
-;;                         (if-let ((buffer (get-buffer cand)))
-;;                             ;; Don't mess with EXWM buffers
-;;                             (with-current-buffer buffer
-;;                               (not (derived-mode-p 'exwm-mode))))))))
-;;
-;;                                          ;:hook
-;;    ;;(after-init . ivy-rich-mode)
-;;    )
-;;                                          ;end ivy-rich
-;;  ;;(setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-;;
-;;
-;;  (use-package swiper
-;;    :bind* (("C-s" . swiper)
-;;                                          ;("C-r" . swiper)
-;;            ("C-M-s" . swiper-all)
-;;            ("M-s" . swiper-thing-at-point))
-;;    :bind
-;;    (:map read-expression-map
-;;          ("C-r" . counsel-minibuffer-history))
-;;    );end swiper
-;;
-;;  ;; 3-5-2022
-;;  ;; loccur
-;;  (use-package loccur
-;;    :ensure t)
-;;
-;;  ;; defines shortcut for loccur of the current word
-;;  (define-key global-map [(control o)] 'loccur-current)
-;;  ;; defines shortcut for the interactive loccur command
-;;  (define-key global-map [(control meta o)] 'loccur)
-;;  ;; defines shortcut for the loccur of the previously found word
-;;  (define-key global-map [(control shift o)] 'loccur-previous-match)
-;;
-;;  (define-key global-map (kbd "M-s C-o") 'loccur-isearch)
-;;  (define-key isearch-mode-map (kbd "C-o") 'loccur-isearch)
-;;
-;;  ;; Enable vertico
-;;  ;; https://github.com/minad/vertico
-;;  (use-package vertico
-;;    :ensure t
-;;    :init
-;;    (vertico-mode)
-;;
-;;    ;; Different scroll margin
-;;    ;; (setq vertico-scroll-margin 0)
-;;
-;;    ;; Show more candidates
-;;    (setq vertico-count 20)
-;;
-;;    ;; Grow and shrink the Vertico minibuffer
-;;    (setq vertico-resize t)
-;;
-;;    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-;;    (setq vertico-cycle t)
-;;    )
-;;
-;;  ;; Optionally use the `orderless' completion style. See
-;;  ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
-;;  ;; dispatcher. Additionally enable `partial-completion' for file path
-;;  ;; expansion. `partial-completion' is important for wildcard support.
-;;  ;; Multiple files can be opened at once with `find-file' if you enter a
-;;  ;; wildcard. You may also give the `initials' completion style a try.
-;;  (use-package orderless
-;;    :ensure t
-;;    :init
-;;    ;; Configure a custom style dispatcher (see the Consult wiki)
-;;    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
-;;    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-;;    (setq completion-styles '(orderless)
-;;          completion-category-defaults nil
-;;          completion-category-overrides '((file (styles partial-completion)))))
-;;
-;;  ;; Persist history over Emacs restarts. Vertico sorts by history position.
-;;  (use-package savehist
-;;    :init
-;;    (savehist-mode))
-;;
-;;  ;; A few more useful configurations...
-;;  (use-package emacs
-;;    :ensure t
-;;    :init
-;;    ;; Add prompt indicator to `completing-read-multiple'.
-;;    ;; Alternatively try `consult-completing-read-multiple'.
-;;    (defun crm-indicator (args)
-;;      (cons (concat "[CRM] " (car args)) (cdr args)))
-;;    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-;;
-;;    ;; Do not allow the cursor in the minibuffer prompt
-;;    (setq minibuffer-prompt-properties
-;;          '(read-only t cursor-intangible t face minibuffer-prompt))
-;;    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-;;
-;;    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-;;    ;; Vertico commands are hidden in normal buffers.
-;;    ;; (setq read-extended-command-predicate
-;;    ;;       #'command-completion-default-include-p)
-;;
-;;    ;; Enable recursive minibuffers
-;;    (setq enable-recursive-minibuffers t))
-;;
-;;  ;; END vertico setup
-;;
-;;
-;;  (use-package orderless
-;;    :ensure t
-;;    :custom (completion-styles '(orderless)))
-;;
-;;
-;;  ;; Enable richer annotations using the Marginalia package
-;;  (use-package marginalia
-;;    :ensure t
-;;    ;; Either bind `marginalia-cycle` globally or only in the minibuffer
-;;    :bind (("M-A" . marginalia-cycle)
-;;           :map minibuffer-local-map
-;;           ("M-A" . marginalia-cycle))
-;;
-;;    ;; The :init configuration is always executed (Not lazy!)
-;;    :init
-;;
-;;    ;; Must be in the :init section of use-package such that the mode gets
-;;    ;; enabled right away. Note that this forces loading the package.
-;;    (marginalia-mode))
-;;
-;;;; https://github.com/oantolin/embark
-;;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
-;;  (use-package embark
-;;    :ensure t
-;;
-;;    :bind
-;;    (("C-." . embark-act)         ;; pick some comfortable binding
-;;     ("C-;" . embark-dwim)        ;; good alternative: M-.
-;;     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-;;
-;;    :init
-;;
-;;    ;; Optionally replace the key help with a completing-read interface
-;;    (setq prefix-help-command #'embark-prefix-help-command)
-;;
-;;    :config
-;;
-;;    ;; Hide the mode line of the Embark live/completions buffers
-;;    (add-to-list 'display-buffer-alist
-;;                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-;;                   nil
-;;                   (window-parameters (mode-line-format . none)))))
-;;
-;;  ;; Consult users will also want the embark-consult package.
-;;  (use-package embark-consult
-;;    :ensure t
-;;    :after (embark consult)
-;;    :demand t ; only necessary if you have the hook below
-;;    ;; if you want to have consult previews as you move around an
-;;    ;; auto-updating embark collect buffer
-;;    :hook
-;;    (embark-collect-mode . consult-preview-at-point-mode))
-;;
+ ;; https://readingworldmagazine.com/emacs/2021-11-14-emacs-how-to-find-just-about-anything-on-your-computer-2/
+ ;; Adding counsel,  ivy-rich, swiper
+
+ (use-package counsel
+   :ensure t
+   :after ivy
+   :config
+                                         ; Don't start searches with ^
+   (setq ivy-initial-inputs-alist nil)
+   (counsel-mode)
+                                         ;show org-tags in counsel searches
+   (setq counsel-org-headline-display-tags t)
+                                         ;show org-todos in counsel searches
+   (setq counsel-org-headline-display-todo t)
+
+   (define-key ivy-switch-buffer-map (kbd "C-d") 'mu-ivy-kill-buffer)
+                                         ;ivy-todo calls org-set-tags-command, remap to counsel-org-tag
+   (global-set-key [remap org-set-tags-command] #'counsel-org-tag)
+
+   :bind (
+          ([remap describe-function] . counsel-describe-function)
+          ([remap describe-command] . helpful-command)
+          ([remap describe-variable] . counsel-describe-variable)
+          ([remap describe-key] . helpful-key)
+          ("M-x" . counsel-M-x)
+          ("C-x b" . counsel-switch-buffer)
+          ("C-x C-b" . counsel-ibuffer)
+          ("C-x C-m" . counsel-imenu) ;headers level 1
+          ("C-x C-d" . counsel-bookmarked-directory)
+          ;;("C-x f" .  helm-org-rifle-current-buffer)
+          ;;("C-x r" .  helm-org-rifle)
+          ("C-x C-a" . counsel-rg)
+          ("C-x C-r" . counsel-recentf)
+          ("C-x C-f" . counsel-find-file)
+          ("C-h b" . counsel-descbinds)
+          ("M-y" . counsel-yank-pop)
+          ("M-SPC" . counsel-shell-history)
+          :map minibuffer-local-map
+          ("C-r" . 'counsel-minibuffer-history)
+          ("C-d" . ivy-switch-buffer-kill); d for delete
+          );end bind
+   );end counsel
+
+ ;;(use-package recentf
+ ;;  :ensure t)
+ ;;(recentf-mode 1)
+
+ (use-package all-the-icons-ivy-rich
+   :ensure t
+   :init (all-the-icons-ivy-rich-mode 1))
+
+ (use-package ivy-rich
+   :after (:and ivy counsel)
+                                         ;:ensure t
+                                         ;:commands (counsel-mode)
+   :init
+   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+   (ivy-rich-mode)
+   :config
+                                         ;these are david wilsons configurations
+   (setq ivy-format-function #'ivy-format-function-line)
+   (setq ivy-rich-display-transformers-list
+         (plist-put ivy-rich-display-transformers-list
+                    'ivy-switch-buffer
+                    '(:columns
+                      ((ivy-rich-candidate (:width 40))
+                       (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right)); return the buffer indicators
+                       (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))          ; return the major mode info
+                       (ivy-rich-switch-buffer-project (:width 15 :face success))             ; return project name using `projectile'
+                       (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))  ; return file path relative to project root or `default-directory' if project is nil
+                      :predicate
+                      (lambda (cand)
+                        (if-let ((buffer (get-buffer cand)))
+                            ;; Don't mess with EXWM buffers
+                            (with-current-buffer buffer
+                              (not (derived-mode-p 'exwm-mode))))))))
+
+                                         ;:hook
+   ;;(after-init . ivy-rich-mode)
+   )
+                                         ;end ivy-rich
+ ;;(setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
+
+
+ (use-package swiper
+   :bind* (("C-s" . swiper)
+                                         ;("C-r" . swiper)
+           ("C-M-s" . swiper-all)
+           ("M-s" . swiper-thing-at-point))
+   :bind
+   (:map read-expression-map
+         ("C-r" . counsel-minibuffer-history))
+   );end swiper
+
+ ;; 3-5-2022
+ ;; loccur
+ (use-package loccur
+   :ensure t)
+
+ ;; defines shortcut for loccur of the current word
+ (define-key global-map [(control o)] 'loccur-current)
+ ;; defines shortcut for the interactive loccur command
+ (define-key global-map [(control meta o)] 'loccur)
+ ;; defines shortcut for the loccur of the previously found word
+ (define-key global-map [(control shift o)] 'loccur-previous-match)
+
+ (define-key global-map (kbd "M-s C-o") 'loccur-isearch)
+ (define-key isearch-mode-map (kbd "C-o") 'loccur-isearch)
+
+ ;; Enable vertico
+ ;; https://github.com/minad/vertico
+ (use-package vertico
+   :ensure t
+   :init
+   (vertico-mode)
+
+   ;; Different scroll margin
+   ;; (setq vertico-scroll-margin 0)
+
+   ;; Show more candidates
+   (setq vertico-count 20)
+
+   ;; Grow and shrink the Vertico minibuffer
+   (setq vertico-resize t)
+
+   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+   (setq vertico-cycle t)
+   )
+
+ ;; Optionally use the `orderless' completion style. See
+ ;; `+orderless-dispatch' in the Consult wiki for an advanced Orderless style
+ ;; dispatcher. Additionally enable `partial-completion' for file path
+ ;; expansion. `partial-completion' is important for wildcard support.
+ ;; Multiple files can be opened at once with `find-file' if you enter a
+ ;; wildcard. You may also give the `initials' completion style a try.
+ (use-package orderless
+   :ensure t
+   :init
+   ;; Configure a custom style dispatcher (see the Consult wiki)
+   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+   (setq completion-styles '(orderless)
+         completion-category-defaults nil
+         completion-category-overrides '((file (styles partial-completion)))))
+
+ ;; Persist history over Emacs restarts. Vertico sorts by history position.
+ (use-package savehist
+   :init
+   (savehist-mode))
+
+ ;; A few more useful configurations...
+ (use-package emacs
+   :ensure t
+   :init
+   ;; Add prompt indicator to `completing-read-multiple'.
+   ;; Alternatively try `consult-completing-read-multiple'.
+   (defun crm-indicator (args)
+     (cons (concat "[CRM] " (car args)) (cdr args)))
+   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+   ;; Do not allow the cursor in the minibuffer prompt
+   (setq minibuffer-prompt-properties
+         '(read-only t cursor-intangible t face minibuffer-prompt))
+   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+   ;; Vertico commands are hidden in normal buffers.
+   ;; (setq read-extended-command-predicate
+   ;;       #'command-completion-default-include-p)
+
+   ;; Enable recursive minibuffers
+   (setq enable-recursive-minibuffers t))
+
+ ;; END vertico setup
+
+
+ (use-package orderless
+   :ensure t
+   :custom (completion-styles '(orderless)))
+
+
+ ;; Enable richer annotations using the Marginalia package
+ (use-package marginalia
+   :ensure t
+   ;; Either bind `marginalia-cycle` globally or only in the minibuffer
+   :bind (("M-A" . marginalia-cycle)
+          :map minibuffer-local-map
+          ("M-A" . marginalia-cycle))
+
+   ;; The :init configuration is always executed (Not lazy!)
+   :init
+
+   ;; Must be in the :init section of use-package such that the mode gets
+   ;; enabled right away. Note that this forces loading the package.
+   (marginalia-mode))
+
+
+;;; https://github.com/oantolin/embark
+;;; Embark: Emacs Mini-Buffer Actions Rooted in Keymaps
+ (use-package embark
+   :ensure t
+
+   :bind
+   (("C-." . embark-act)         ;; pick some comfortable binding
+    ("C-;" . embark-dwim)        ;; good alternative: M-.
+    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+   :init
+
+   ;; Optionally replace the key help with a completing-read interface
+   (setq prefix-help-command #'embark-prefix-help-command)
+
+   :config
+
+   ;; Hide the mode line of the Embark live/completions buffers
+   (add-to-list 'display-buffer-alist
+                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                  nil
+                  (window-parameters (mode-line-format . none)))))
+
+ ;; Consult users will also want the embark-consult package.
+ (use-package embark-consult
+   :ensure t
+   :after (embark consult)
+   :demand t ; only necessary if you have the hook below
+   ;; if you want to have consult previews as you move around an
+   ;; auto-updating embark collect buffer
+   :hook
+   (embark-collect-mode . consult-preview-at-point-mode))
+
 
 
 ;;; oooooo   oooo                                 o8o                        
@@ -1892,17 +1901,21 @@
 
 
 (use-package lsp-ui
-  :defer t
+  :ensure t
+	:after lsp-mode
   :config
   (setq lsp-ui-sideline-enable t
         ;; disable flycheck setup so default linter isn't trampled
         lsp-ui-flycheck-enable nil
-        lsp-ui-sideline-show-symbol nil
-        lsp-ui-sideline-show-hover nil
-        lsp-ui-sideline-show-code-actions nil
-        lsp-ui-peek-enable nil
-        lsp-ui-imenu-enable nil
-        lsp-ui-doc-enable nil))
+				lsp-ui-sideline-show-symbol t
+				lsp-ui-sideline-show-hover t
+       lsp-ui-sideline-show-code-actions t
+       lsp-ui-peek-enable t
+       lsp-ui-imenu-enable t
+       lsp-ui-doc-enable t
+			 )
+	:commands lsp-ui-mode
+	)
 
 ;; MVZ added to this setup 12-23-2022
 ;;;(use-package flycheck
