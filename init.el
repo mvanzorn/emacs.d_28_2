@@ -111,7 +111,7 @@
 
   ;; TRAMP DEBUGGIN / OPTIMIZATION
   (setq vc-handled-backends '(Git))
-  (setq tramp-verbose 1)
+  (setq -verbose 1)
   (setq tramp-default-method "ssh")
   ;; https://stackoverflow.com/questions/56105716/magit-over-tramp-re-use-ssh-connection
   (customize-set-variable
@@ -128,7 +128,7 @@
         browse-url-generic-program "google-chrome")
 
   (delete-selection-mode t)
-  (tool-bar-mode -1)
+  ;;(tool-bar-mode -1)
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
   (setq auto-save-default nil)
@@ -136,7 +136,10 @@
   (setq create-lockfiles nil)
   (global-display-line-numbers-mode)
   (global-prettify-symbols-mode 1)
-  ;;(global-hl-line-mode 1)
+
+;;;  (global-hl-line-mode 1)
+;;;(set-face-background 'hl-line "#3e4446")
+;;;(set-face-foreground 'highlight nil)
 
   (setq tab-line-close-button-show nil)
   (setq tab-line-tabs-function 'tab-line-tabs-mode-buffers)
@@ -175,6 +178,37 @@
     :ensure t
     :bind (("<f9>" . er/expand-region)
            ("C--" . er/contract-region)))
+
+
+;;; MVZ 12-27-2022 More from Emacs Rocks
+(defun my-more-like-this (arg)
+  (interactive "p")
+  (if (not (region-active-p))
+      (select-at-point)
+    (mc/mark-next-like-this arg)
+    )
+  )
+
+(defun my-previous-like-this (arg)
+  (interactive "p")
+  (if (not (region-active-p))
+      (select-at-point)
+    (mc/mark-previous-like-this arg)
+    )
+  )
+
+(defun select-at-point ()
+  (interactive)
+  (setq default (thing-at-point 'word))
+  (setq bds (bounds-of-thing-at-point 'word))
+  (setq p1 (car bds))
+  (setq p2 (cdr bds))
+  (set-mark p1)
+  (goto-char p2)
+)
+
+
+
 
 ;;MVZ 12-3-2022
 (define-key input-decode-map "\e\eOA" [(meta up)])
@@ -263,16 +297,16 @@
 
 
 
-;;;   .oooooo.                           .oooooo..o ooooooooooooo 
-;;;  d8P'  `Y8b                         d8P'    `Y8 8'   888   `8 
-;;; 888      888 oooo d8b  .oooooooo    Y88bo.           888      
-;;; 888      888 `888""8P 888' `88b      `"Y8888o.       888      
-;;; 888      888  888     888   888          `"Y88b      888      
-;;; `88b    d88'  888     `88bod8P'     oo     .d8P      888      
-;;;  `Y8bood8P'  d888b    `8oooooo.     8""88888P'      o888o     
-;;;                       d"     YD                               
-;;;                       "Y88888P'                               
-                                                              
+;;;   .oooooo.                           .oooooo..o ooooooooooooo
+;;;  d8P'  `Y8b                         d8P'    `Y8 8'   888   `8
+;;; 888      888 oooo d8b  .oooooooo    Y88bo.           888
+;;; 888      888 `888""8P 888' `88b      `"Y8888o.       888
+;;; 888      888  888     888   888          `"Y88b      888
+;;; `88b    d88'  888     `88bod8P'     oo     .d8P      888
+;;;  `Y8bood8P'  d888b    `8oooooo.     8""88888P'      o888o
+;;;                       d"     YD
+;;;                       "Y88888P'
+
 
 ;;;; ORG-MODE
 ;;;;(use-package org-contrib)
@@ -801,16 +835,16 @@
 ;;;; END ORG-MODE
 
 
-;;;   .oooooo.                          oooooooooooo ooooo      ooo oooooooooo.   
-;;;  d8P'  `Y8b                         `888'     `8 `888b.     `8' `888'   `Y8b  
-;;; 888      888 oooo d8b  .oooooooo     888          8 `88b.    8   888      888 
-;;; 888      888 `888""8P 888' `88b      888oooo8     8   `88b.  8   888      888 
-;;; 888      888  888     888   888      888    "     8     `88b.8   888      888 
-;;; `88b    d88'  888     `88bod8P'      888       o  8       `888   888     d88' 
-;;;  `Y8bood8P'  d888b    `8oooooo.     o888ooooood8 o8o        `8  o888bood8P'   
-;;;                       d"     YD                                               
-;;;                       "Y88888P'                                               
-                                                                              
+;;;   .oooooo.                          oooooooooooo ooooo      ooo oooooooooo.
+;;;  d8P'  `Y8b                         `888'     `8 `888b.     `8' `888'   `Y8b
+;;; 888      888 oooo d8b  .oooooooo     888          8 `88b.    8   888      888
+;;; 888      888 `888""8P 888' `88b      888oooo8     8   `88b.  8   888      888
+;;; 888      888  888     888   888      888    "     8     `88b.8   888      888
+;;; `88b    d88'  888     `88bod8P'      888       o  8       `888   888     d88'
+;;;  `Y8bood8P'  d888b    `8oooooo.     o888ooooood8 o8o        `8  o888bood8P'
+;;;                       d"     YD
+;;;                       "Y88888P'
+
 ;;
 ;;;; ORG-ROAM 3-16-2022
 ;;;; https://github.com/org-roam/org-roam
@@ -911,9 +945,9 @@
 (global-set-key "\M-Z" 'zap-up-to-char)
 
 
-;;;; Beacon
-(use-package beacon)
-(beacon-mode 1)
+;;;; Beacon  -- MVZ 12-29-2022 replaced with hl-line+ flash
+;;(use-package beacon)
+;;(beacon-mode 1)
 
 ;; make cursor the width of the character it is under
 ;; i.e. full width of a TAB
@@ -925,8 +959,8 @@
   :ensure   t
   :bind ( ("H-SPC" . set-rectangular-region-anchor)
          ("C-M-SPC" . set-rectangular-region-anchor)
-         (" C->" . mc/mark-next-like-this)
-         (" C-<" . mc/mark-previous-like-this)
+        ;;; (" C->" . mc/mark-next-like-this)
+        ;;; (" C-<" . mc/mark-previous-like-this)
          (" C-c C->" . mc/mark-all-like-this)
          (" C-S-c C-S-c" . mc/edit-lines)
          ))
@@ -978,19 +1012,19 @@
 ;;;;      maximum-scroll-margin 0.5
 ;;;;      scroll-margin 99999)
 ;;
-;;;; Highlight Indent Guides 3-16-2022
-;;(use-package highlight-indent-guides
-;;  :ensure t)
-;;(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+;; Highlight Indent Guides 3-16-2022
+(use-package highlight-indent-guides
+  :ensure t)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 ;;
 ;;
 ;;
 
 
-;; hl-line+  3-16-2022
- (use-package hl-line+
- 	:load-path "~/.emacs.d/packages/")
- (toggle-hl-line-when-idle 1)
+;;;hl-line+  3-16-2022
+;; (use-package hl-line+
+;; 	:load-path "~/.emacs.d/packages/")
+;; (toggle-hl-line-when-idle 2)
 
 (use-package hl-line+
   :load-path "~/.emacs.d/packages/"
@@ -1001,10 +1035,22 @@
 
   :custom
   (global-hl-line-mode nil)
-  (hl-line-flash-show-period 0.5)
-  (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+	;;(toggle-hl-line-when-idle 1)
+	(hl-line-flash-show-period 0.5)
+	(hl-line-inhibit-highlighting-for-modes '(dired-mode))
   (hl-line-overlay-priority -100) ;; sadly, seems not observed by diredfl
   )
+
+
+;;; MVZ 12-27-2022 Centering mode with recenter at end of file
+(use-package centered-cursor-mode
+  :ensure t
+  :init
+  (global-centered-cursor-mode 1)
+  )
+(setq scroll-margin 28) ;; full screen = 57 lines
+(setq-default indicate-empty-lines t)
+(setq ccm-recenter-at-end-of-file t)
 
 
 ;;;; 2-28-2022 Additions
@@ -1075,6 +1121,12 @@
 ;;    (setq clipboard (replace-regexp-in-string "\r" "" clipboard)) ; Remove Windows ^M characters
 ;;    (setq clipboard (substring clipboard 0 -1)) ; Remove newline added by Powershell
 ;;    (insert clipboard)))
+
+
+
+;;; MVZ 12-27-2022 Visual-Regexp
+(use-package visual-regexp
+	:ensure t)
 
 
 
@@ -1243,6 +1295,9 @@
   :ensure t
 )
 (global-set-key (kbd "M-0") #'treemacs-select-window)
+
+;;(require 'treemacs-all-the-icons)
+;;(treemacs-load-theme "all-the-icons")
 
 
 ;; Built-in project package
@@ -1512,24 +1567,24 @@
 
 
 
-;;; oooooo   oooo                                 o8o                        
-;;;  `888.   .8'                                  `"'                        
-;;;   `888. .8'    .oooo.    .oooo.o ooo. .oo.   oooo  oo.ooooo.  oo.ooooo.  
-;;;    `888.8'    `P  )88b  d88(  "8 `888P"Y88b  `888   888' `88b  888' `88b 
-;;;     `888'      .oP"888  `"Y88b.   888   888   888   888   888  888   888 
-;;;      888      d8(  888  o.  )88b  888   888   888   888   888  888   888 
-;;;     o888o     `Y888""8o 8""888P' o888o o888o o888o  888bod8P'  888bod8P' 
-;;;                                                     888        888       
-;;;                                                    o888o      o888o      
-                                                                         
-;;;               .   
-;;;             .o8   
-;;;  .ooooo.  .o888oo 
-;;; d88' `88b   888   
-;;; 888ooo888   888   
-;;; 888    .o   888 . 
-;;; `Y8bod8P'   "888" 
-                  
+;;; oooooo   oooo                                 o8o
+;;;  `888.   .8'                                  `"'
+;;;   `888. .8'    .oooo.    .oooo.o ooo. .oo.   oooo  oo.ooooo.  oo.ooooo.
+;;;    `888.8'    `P  )88b  d88(  "8 `888P"Y88b  `888   888' `88b  888' `88b
+;;;     `888'      .oP"888  `"Y88b.   888   888   888   888   888  888   888
+;;;      888      d8(  888  o.  )88b  888   888   888   888   888  888   888
+;;;     o888o     `Y888""8o 8""888P' o888o o888o o888o  888bod8P'  888bod8P'
+;;;                                                     888        888
+;;;                                                    o888o      o888o
+
+;;;               .
+;;;             .o8
+;;;  .ooooo.  .o888oo
+;;; d88' `88b   888
+;;; 888ooo888   888
+;;; 888    .o   888 .
+;;; `Y8bod8P'   "888"
+
 (use-package yasnippet
   :ensure
   :bind
@@ -1626,13 +1681,13 @@
 ;;
 
 
-;;; oooooo   oooooo     oooo            .o8           .oooooo..o ooooooooooooo 
-;;;  `888.    `888.     .8'            "888          d8P'    `Y8 8'   888   `8 
-;;;   `888.   .8888.   .8'    .ooooo.   888oooo.     Y88bo.           888      
-;;;    `888  .8'`888. .8'    d88' `88b  d88' `88b     `"Y8888o.       888      
-;;;     `888.8'  `888.8'     888ooo888  888   888         `"Y88b      888      
-;;;      `888'    `888'      888    .o  888   888    oo     .d8P      888      
-;;;       `8'      `8'       `Y8bod8P'  `Y8bod8P'    8""88888P'      o888o     
+;;; oooooo   oooooo     oooo            .o8           .oooooo..o ooooooooooooo
+;;;  `888.    `888.     .8'            "888          d8P'    `Y8 8'   888   `8
+;;;   `888.   .8888.   .8'    .ooooo.   888oooo.     Y88bo.           888
+;;;    `888  .8'`888. .8'    d88' `88b  d88' `88b     `"Y8888o.       888
+;;;     `888.8'  `888.8'     888ooo888  888   888         `"Y88b      888
+;;;      `888'    `888'      888    .o  888   888    oo     .d8P      888
+;;;       `8'      `8'       `Y8bod8P'  `Y8bod8P'    8""88888P'      o888o
 ;; web-mode
 (setq-default tab-width 2)
 (setq indent-tabs-mode nil)
@@ -1719,7 +1774,7 @@
 ;;js-jsx-mode
 ;;js2-jsx-mode
 ;;js-mode
-					
+
 
 
 ;;;; company
@@ -1768,67 +1823,156 @@
 ;;
 ;;(global-set-key (kbd "C-x K") 'lukewh/kill-buffer)
 ;;
-;;;; DOOM THEMES 3-16-2022
-;;;; https://github.com/doomemacs/themes#manually
-;;(use-package doom-themes
-;;  :ensure t
-;;  :config
-;;  ;; Global settings (defaults)
-;;  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;  (load-theme 'doom-molokai t)
-;;  ;; (load-theme 'doom-dark+ t)
-;;  ;; (load-theme 'doom-gruvbox t)
-;;  ;; (load-theme 'doom-peacock t)
-;;
-;;
-;;  ;; Enable flashing mode-line on errors
-;;  (doom-themes-visual-bell-config)
-;;  ;; Enable custom neotree theme (all-the-icons must be installed!)
-;;  ;;(doom-themes-neotree-config)
-;;  ;; or for treemacs users
-;;
-;;  (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
-;;  (setq doom-themes-treemacs-enable-variable-pitch nil)
-;;  ;;(setq doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 11))
-;;  (doom-themes-treemacs-config)
-;;  ;; Corrects (and improves) org-mode's native fontification.
-;;  (doom-themes-org-config))
-;;
-;;
-;;;; DOOM modeline 3-16-2022
-;;(use-package doom-modeline
+
+
+;;DOOM THEMES 3-16-2022
+;;https://github.com/doomemacs/themes#manually
+(use-package doom-themes
+ :ensure t
+ :config
+ ;; Global settings (defaults)
+ (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+       doom-themes-enable-italic t) ; if nil, italics is universally disabled
+ (load-theme 'doom-molokai t)
+ ;; (load-theme 'doom-dark+ t)
+ ;; (load-theme 'doom-gruvbox t)
+ ;; (load-theme 'doom-peacock t)
+
+
+ ;; Enable flashing mode-line on errors
+ (doom-themes-visual-bell-config)
+ ;; Enable custom neotree theme (all-the-icons must be installed!)
+ ;;(doom-themes-neotree-config)
+ ;; or for treemacs users
+
+ (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+ (setq doom-themes-treemacs-enable-variable-pitch nil)
+ ;;(setq doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 11))
+ (doom-themes-treemacs-config)
+ ;; Corrects (and improves) org-mode's native fontification.
+ (doom-themes-org-config))
+
+
+;;DOOM modeline 3-16-2022
+;; (use-package doom-modeline
 ;;  :ensure t
 ;;  :init (doom-modeline-mode 1))
-;;
-;;
-;;;; When running emacsclient -c this will ensure theme loads
-;;;; theme
-;;;;(defvar my:theme 'modus-vivendi)
-;;;;(defvar my:theme-window-loaded nil)
-;;;;(defvar my:theme-terminal-loaded nil)
-;;
-;;;;(if (daemonp)
-;;;;    (add-hook 'after-make-frame-functions(lambda (frame)
-;;;;                       (select-frame frame)
-;;;;                       (if (window-system frame)
-;;;;                           (unless my:theme-window-loaded
-;;;;                             (if my:theme-terminal-loaded
-;;;;                                 (enable-theme my:theme)
-;;;;                               (load-theme my:theme t))
-;;;;                            (setq my:theme-window-loaded t))
-;;;;                         (unless my:theme-terminal-loaded
-;;;;                           (if my:theme-window-loaded
-;;;;                               (enable-theme my:theme)
-;;;;                             (load-theme my:theme t))
-;;;;                          (setq my:theme-terminal-loaded t)))))
-;;
-;;;;  (progn
-;;;;    (load-theme my:theme t)
-;;;;    (if (display-graphic-p)
-;;;;        (setq my:theme-window-loaded t)
-;;;;      (setq my:theme-terminal-loaded t))))
-;;
+
+;;; MVZ 12-27-2022 DOOM modeline new
+;;; https://www.reddit.com/r/emacs/comments/dhrl56/post_your_emacsscreenshot_here/
+
+(use-package doom-modeline
+  :init (setq doom-modeline-height 0) ;; 0 fit font height
+  :hook (after-init . doom-modeline-mode)
+  :custom-face
+  (mode-line ((t (:height 1.00)))) ;; 1.06 random sufficient scale
+  (mode-line-inactive ((t (:height 1.00)))) ;; same
+  :config
+  (setq doom-modeline-bar-width 0)
+  
+  (size-indication-mode 0)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project) ;; full path
+  ;; only one number for checker infomation
+  (setq doom-modeline-checker-simple-format t)
+  ;; exclude caching during GC
+  (setq inhibit-compacting-font-caches t)
+  
+  (setq doom-modeline-icon t)
+  ;; no color for icons (because of current theme)
+  (setq doom-modeline-major-mode-color-icon nil)
+  (setq doom-modeline-buffer-modification-icon t) ;; read-only icon
+  (setq doom-modeline-buffer-state-icon t) ;; save icon 
+
+  (setq doom-modeline-vcs-max-length 12)
+  ;; (setq doom-modeline-)
+  
+  ;; whether to display indentation information.
+  (setq doom-modeline-indent-info nil)
+  (setq doom-modeline-enable-word-count nil)
+  ;; show version of python/rust environments
+  (setq doom-modeline-env-version t)
+  (setq doom-modeline-env-enable-python t)
+  (setq doom-modeline-env-enable-ruby t)
+  (setq doom-modeline-env-enable-perl t)
+  (setq doom-modeline-env-enable-go t)
+  (setq doom-modeline-env-enable-elixir t)
+  (setq doom-modeline-env-enable-rust t)
+
+  ;; change the executables to use for the language version string
+  (setq doom-modeline-env-python-executable "python") 
+  (setq doom-modeline-env-ruby-executable "ruby")
+  (setq doom-modeline-env-perl-executable "perl")
+  (setq doom-modeline-env-go-executable "go")
+  (setq doom-modeline-env-elixir-executable "iex")
+  (setq doom-modeline-env-rust-executable "rustc")
+
+  (setq doom-modeline-env-load-string "v.?")
+
+  (setq doom-modeline-enable-word-count nil)
+  (doom-modeline-def-modeline
+    'my-doom-mode-line
+    '(input-method
+      media-info
+      workspace-name
+      window-number
+      ;;bar
+      buffer-info
+      " "
+      matches
+      vcs
+      remote-host
+      ;;nyan-mode
+      ;;parrot
+      selection-info)
+    '(misc-info
+      input-method
+      ;;buffer-encoding
+      process
+      major-mode
+      checker
+      debug
+      lsp
+      github
+;;;      display-battery
+      buffer-position
+      pdf-pages
+      "   "))
+
+  (defun my-setup-custom-doom-modeline ()
+    (doom-modeline-set-modeline 'my-doom-mode-line 'default))
+
+  (add-hook 'doom-modeline-mode-hook 'my-setup-custom-doom-modeline)
+)
+
+
+
+
+;;When running emacsclient -c this will ensure theme loads theme
+(defvar my:theme 'doom-molokai)
+(defvar my:theme-window-loaded nil)
+(defvar my:theme-terminal-loaded nil)
+
+(if (daemonp)
+   (add-hook 'after-make-frame-functions(lambda (frame)
+                      (select-frame frame)
+                      (if (window-system frame)
+                          (unless my:theme-window-loaded
+                            (if my:theme-terminal-loaded
+                                (enable-theme my:theme)
+                              (load-theme my:theme t))
+                           (setq my:theme-window-loaded t))
+                        (unless my:theme-terminal-loaded
+                          (if my:theme-window-loaded
+                              (enable-theme my:theme)
+                            (load-theme my:theme t))
+                         (setq my:theme-terminal-loaded t)))))
+
+ (progn
+   (load-theme my:theme t)
+   (if (display-graphic-p)
+       (setq my:theme-window-loaded t)
+     (setq my:theme-terminal-loaded t))))
+
 
 
 ;; lsp-mode testing 12-23-2022  emacs 29.0.60
@@ -2039,7 +2183,7 @@
     ;; Opening Files
     (key-chord-define-global "o0" 'helm-find-files)
     (key-chord-define-global "o=" 'dired-jump)
-    (key-chord-define-global "o-" 'ido-recentf-open)
+    (key-chord-define-global "o-" 'counsel-recentf)
     (key-chord-define-global "o[" 'find-file-at-point)
 
     ;; One for projectile:
@@ -2064,7 +2208,13 @@
     (key-chord-define-global "m." 'my-more-like-this)
     (key-chord-define-global "s1" 'ispell-region)
     (key-chord-define-global "[]" 'deft)
-
+    (key-chord-define-global ";u" 'undo-tree-visualize)
+ ;; window management:
+  (key-chord-define-global ";2" 'double-window)
+  (key-chord-define-global ";3" 'triple-window)
+  (key-chord-define-global ";8" 'eighty-columns)
+  (key-chord-define-global ";w" 'one-hundred-thirty-two-columns)
+  (key-chord-define-global ";s" 'rotate-windows)  ;; "s" for switch
 
     (key-chord-define-global "e5" 'sp-change-enclosing)
 
@@ -2077,30 +2227,30 @@
   ;;
   ;; ace jump mode major function
   ;;
-  (use-package ace-jump-mode
+  ;; (use-package ace-jump-mode
 
-    :defer t)
-  (autoload
-    'ace-jump-mode
-    "ace-jump-mode"
-    "Emacs quick move minor mode"
-    t)
-  ;; you can select the key you prefer to
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+  ;;   :defer t)
+  ;; (autoload
+  ;;   'ace-jump-mode
+  ;;   "ace-jump-mode"
+  ;;   "Emacs quick move minor mode"
+  ;;   t)
+  ;; ;; you can select the key you prefer to
+  ;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
 
 
-  ;;
-  ;; enable a more powerful jump back function from ace jump mode
-  ;;
-  (autoload
-    'ace-jump-mode-pop-mark
-    "ace-jump-mode"
-    "Ace jump back:-)"
-    t)
-  (eval-after-load "ace-jump-mode"
-    '(ace-jump-mode-enable-mark-sync))
-  (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+  ;; ;;
+  ;; ;; enable a more powerful jump back function from ace jump mode
+  ;; ;;
+  ;; (autoload
+  ;;   'ace-jump-mode-pop-mark
+  ;;   "ace-jump-mode"
+  ;;   "Ace jump back:-)"
+  ;;   t)
+  ;; (eval-after-load "ace-jump-mode"
+  ;;   '(ace-jump-mode-enable-mark-sync))
+  ;; (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
 
 ;;;; CTRLF
@@ -2176,3 +2326,16 @@
 ;;	 '("4fda8201465755b403a33e385cf0f75eeec31ca8893199266a6aeccb4adedfa4" "e87f48ec4aebdca07bb865b90088eb28ae4b286ee8473aadb39213d361d0c45f" "0c08a5c3c2a72e3ca806a29302ef942335292a80c2934c1123e8c732bb2ddd77" "b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "046e442b73846ae114d575a51be9edb081a1ef29c05ae5e237d5769ecfd70c2e" default))
 ;; '(global-display-line-numbers-mode t)
 ;; '(tool-bar-mode nil))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+	 '("be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "0cd00c17f9c1f408343ac77237efca1e4e335b84406e05221126a6ee7da28971" "cffc64e7e3f0639cfeee833856beeb879e8f03e47901b24ca6ddd67d9a761df5" "8d5f22f7dfd3b2e4fc2f2da46ee71065a9474d0ac726b98f647bc3c7e39f2819" "7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "6945dadc749ac5cbd47012cad836f92aea9ebec9f504d32fe89a956260773ca4" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "b54376ec363568656d54578d28b95382854f62b74c32077821fdfd604268616a" "8d8207a39e18e2cc95ebddf62f841442d36fcba01a2a9451773d4ed30b632443" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "4fda8201465755b403a33e385cf0f75eeec31ca8893199266a6aeccb4adedfa4" "b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" default)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(hl-line ((t (:extend t :background "brightblack")))))
