@@ -3,8 +3,8 @@
   ;; npm i -g prettier
   ;; in Project dir, npm init, eslint --init
 
-  ;; Needed after 28.2 install and byte recompile of all packages?
-
+;;;  Needed after 28.2 install and byte recompile of all packages
+;;;  Eval: (byte-recompile-directory package-user-dir nil 'force)
 
 ;; Bootstrapper for package/use-package, only needed on fresh installations
 ;; ;;{{{ Set up package and use-package
@@ -111,7 +111,7 @@
 
   ;; TRAMP DEBUGGIN / OPTIMIZATION
   (setq vc-handled-backends '(Git))
-  (setq -verbose 1)
+  (setq tramp-verbose 1)
   (setq tramp-default-method "ssh")
   ;; https://stackoverflow.com/questions/56105716/magit-over-tramp-re-use-ssh-connection
   (customize-set-variable
@@ -284,6 +284,29 @@
 ;;; C-u M-x figlet  to be asked for the font first.
 ;;; M-x banner      for an old-fashioned banner font.
 (load "~/.emacs.d/packages/figlet.el")
+
+;;; NANO font stack from https://gist.github.com/rougier/b15fb6e98fadb6580958b1733659027b
+
+(set-face-attribute 'default nil
+										:family "Roboto Mono" :weight 'light :height 140)
+
+(set-face-attribute 'bold nil
+										:family "Roboto Mono" :weight 'regular)
+
+(set-face-attribute 'italic nil
+										:family "Victor Mono" :weight 'semilight :slant 'italic)
+
+(set-fontset-font t 'unicode
+									(font-spec :name "Inconsolata Light" :size 16) nil)
+
+(set-fontset-font t '(#xe000 . #xffdd)
+									(font-spec :name "RobotoMono Nerd Font" :size 12) nil)
+
+(straight-use-package '(nano-theme :type git :host github
+                                   :repo "rougier/nano-theme"))
+
+;;; (load-theme 'nano t)
+;;; (nano-mode)
 
 
 ;; json-mode
@@ -1048,9 +1071,9 @@
   :init
   (global-centered-cursor-mode 1)
   )
-(setq scroll-margin 28) ;; full screen = 57 lines
-(setq-default indicate-empty-lines t)
-(setq ccm-recenter-at-end-of-file t)
+;; (setq scroll-margin 28) ;; full screen = 57 lines
+;; (setq-default indicate-empty-lines t)
+;; (setq ccm-recenter-at-end-of-file t)
 
 
 ;;;; 2-28-2022 Additions
@@ -1833,7 +1856,7 @@
  ;; Global settings (defaults)
  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
        doom-themes-enable-italic t) ; if nil, italics is universally disabled
- (load-theme 'doom-molokai t)
+ ;; (load-theme 'doom-molokai t)
  ;; (load-theme 'doom-dark+ t)
  ;; (load-theme 'doom-gruvbox t)
  ;; (load-theme 'doom-peacock t)
@@ -1845,9 +1868,9 @@
  ;;(doom-themes-neotree-config)
  ;; or for treemacs users
 
- (setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
- (setq doom-themes-treemacs-enable-variable-pitch nil)
- ;;(setq doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 11))
+(setq doom-themes-treemacs-theme "doom-colors") ; use "doom-colors" for less minimal icon theme
+(setq doom-themes-treemacs-enable-variable-pitch nil)
+;; (setq doom-variable-pitch-font (font-spec :family "Iosevka Term" :size 11))
  (doom-themes-treemacs-config)
  ;; Corrects (and improves) org-mode's native fontification.
  (doom-themes-org-config))
@@ -1946,7 +1969,7 @@
 
 
 
-
+;; MVZ 1-8-2023 Commented out for theme testing
 ;;When running emacsclient -c this will ensure theme loads theme
 (defvar my:theme 'doom-molokai)
 (defvar my:theme-window-loaded nil)
@@ -1972,6 +1995,8 @@
    (if (display-graphic-p)
        (setq my:theme-window-loaded t)
      (setq my:theme-terminal-loaded t))))
+
+
 
 
 
@@ -2332,7 +2357,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-	 '("be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "0cd00c17f9c1f408343ac77237efca1e4e335b84406e05221126a6ee7da28971" "cffc64e7e3f0639cfeee833856beeb879e8f03e47901b24ca6ddd67d9a761df5" "8d5f22f7dfd3b2e4fc2f2da46ee71065a9474d0ac726b98f647bc3c7e39f2819" "7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "6945dadc749ac5cbd47012cad836f92aea9ebec9f504d32fe89a956260773ca4" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "b54376ec363568656d54578d28b95382854f62b74c32077821fdfd604268616a" "8d8207a39e18e2cc95ebddf62f841442d36fcba01a2a9451773d4ed30b632443" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "4fda8201465755b403a33e385cf0f75eeec31ca8893199266a6aeccb4adedfa4" "b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" default)))
+	 '("de8f2d8b64627535871495d6fe65b7d0070c4a1eb51550ce258cd240ff9394b0" "e7820b899036ae7e966dcaaec29fd6b87aef253748b7de09e74fdc54407a7a02" "be84a2e5c70f991051d4aaf0f049fa11c172e5d784727e0b525565bb1533ec78" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "2dc03dfb67fbcb7d9c487522c29b7582da20766c9998aaad5e5b63b5c27eec3f" "0cd00c17f9c1f408343ac77237efca1e4e335b84406e05221126a6ee7da28971" "cffc64e7e3f0639cfeee833856beeb879e8f03e47901b24ca6ddd67d9a761df5" "8d5f22f7dfd3b2e4fc2f2da46ee71065a9474d0ac726b98f647bc3c7e39f2819" "7e377879cbd60c66b88e51fad480b3ab18d60847f31c435f15f5df18bdb18184" "6945dadc749ac5cbd47012cad836f92aea9ebec9f504d32fe89a956260773ca4" "e3daa8f18440301f3e54f2093fe15f4fe951986a8628e98dcd781efbec7a46f2" "b54376ec363568656d54578d28b95382854f62b74c32077821fdfd604268616a" "8d8207a39e18e2cc95ebddf62f841442d36fcba01a2a9451773d4ed30b632443" "251ed7ecd97af314cd77b07359a09da12dcd97be35e3ab761d4a92d8d8cf9a71" "4fda8201465755b403a33e385cf0f75eeec31ca8893199266a6aeccb4adedfa4" "b99e334a4019a2caa71e1d6445fc346c6f074a05fcbb989800ecbe54474ae1b0" default)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

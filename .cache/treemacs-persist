@@ -1,3 +1,5 @@
 * Default
 ** cchat-app
  - path :: ~/cchat-app
+** conferences
+ - path :: ~/conferences

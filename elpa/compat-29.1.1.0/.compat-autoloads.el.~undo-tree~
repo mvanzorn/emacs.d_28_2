@@ -1,0 +1,24 @@
+(undo-tree-save-format-version . 1)
+"bac92f2e23798a9b1a0387d87e1a4220830e1303"
+[nil nil nil nil (25530 56013 276654 823000) 0 nil]
+([nil current ((698 . 706) (631 . 639) (558 . 690) (#("
+;;;### (autoloads nil nil (\"compat-25.el\" \"compat-26.el\" \"compat-27.el\"
+;;;;;;  \"compat-28.el\" \"compat-29.el\" \"compat-pkg.el\") (0 0 0 0))
+
+;;;***
+" 0 148 (fontified nil)) . -558) (550 . 558) (381 . 491) (381 . 440) (#("
+;;;### (autoloads nil \"compat-macs\" \"compat-macs.el\" (0 0 0 0))
+;;; Generated autoloads from compat-macs.el
+
+(register-definition-prefixes \"compat-macs\" '(\"compat-\"))
+
+;;;***
+" 0 177 (fontified nil)) . -381) (373 . 381) (224 . 319) (224 . 278) (#("
+;;;### (autoloads nil \"compat\" \"compat.el\" (0 0 0 0))
+;;; Generated autoloads from compat.el
+
+(register-definition-prefixes \"compat\" '(\"compat-\"))
+
+;;;***
+" 0 157 (fontified nil)) . -224) (t 25530 55971 68701 18000)) nil (25530 56013 276649 835000) 0 nil])
+nil

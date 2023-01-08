@@ -1,1 +1,1 @@
-("~/.emacs.d.28/" "~/cchat-app/" "~/.emacs.d/" "~/ilwdata/" "~/conferences/" "~/.nvm/" "~/cchat-app/node_modules/meteor-node-stubs/")
+("~/.emacs.d/" "~/conferences/" "~/.nvm/")
