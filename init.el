@@ -1784,6 +1784,53 @@
 )
 
 
+;;; oooooooooo.                                      .    o8o   .o88o.             
+;;; `888'   `Y8b                                   .o8    `"'   888 `"             
+;;;  888     888  .ooooo.   .oooo.   oooo  oooo  .o888oo oooo  o888oo  oooo    ooo 
+;;;  888oooo888' d88' `88b `P  )88b  `888  `888    888   `888   888     `88.  .8'  
+;;;  888    `88b 888ooo888  .oP"888   888   888    888    888   888      `88..8'   
+;;;  888    .88P 888    .o d8(  888   888   888    888 .  888   888       `888'    
+;;; o888bood8P'  `Y8bod8P' `Y888""8o  `V88V"V8P'   "888" o888o o888o       .8'     
+;;;                                                                    .o..P'      
+;;;                                                                    `Y8P'       
+                                                                               
+;; https://github.com/yasuyk/web-beautify
+(use-package web-beautify
+	:ensure t)
+
+(eval-after-load 'js2-mode
+  '(define-key js2-mode-map (kbd "C-c b") 'web-beautify-js))
+;; Or if you're using 'js-mode' (a.k.a 'javascript-mode')
+(eval-after-load 'js
+  '(define-key js-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'json-mode
+  '(define-key json-mode-map (kbd "C-c b") 'web-beautify-js))
+
+(eval-after-load 'sgml-mode
+  '(define-key html-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'web-mode
+  '(define-key web-mode-map (kbd "C-c b") 'web-beautify-html))
+
+(eval-after-load 'css-mode
+  '(define-key css-mode-map (kbd "C-c b") 'web-beautify-css))
+
+;; Autoformatting for web and css modes
+;; (eval-after-load 'web-mode
+;;   '(add-hook 'web-mode-hook
+;;              (lambda ()
+;;                (add-hook 'before-save-hook 'web-beautify-html-buffer t t))))
+
+;; (eval-after-load 'css-mode
+;;   '(add-hook 'css-mode-hook
+;;              (lambda ()
+;;               (add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
+
+
+
+
+
 ;;; https://github.com/smihica/emmet-mode
 (use-package emmet-mode
  :ensure t)
@@ -1797,6 +1844,92 @@
 ;;js-jsx-mode
 ;;js2-jsx-mode
 ;;js-mode
+
+
+;;; MVZ 1-9-2023 Smartparens
+(use-package smartparens-config
+  :ensure smartparens
+  :config (progn (show-smartparens-global-mode t)))
+
+(add-hook 'prog-mode-hook 'turn-on-smartparens-strict-mode)
+(add-hook 'markdown-mode-hook 'turn-on-smartparens-strict-mode)
+
+
+(defmacro def-pairs (pairs)
+  "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
+conses, where NAME is the function name that will be created and
+STRING is a single-character string that marks the opening character.
+
+  (def-pairs ((paren . \"(\")
+              (bracket . \"[\"))
+
+defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
+respectively."
+  `(progn
+     ,@(loop for (key . val) in pairs
+             collect
+             `(defun ,(read (concat
+                             "wrap-with-"
+                             (prin1-to-string key)
+                             "s"))
+                  (&optional arg)
+                (interactive "p")
+                (sp-wrap-with-pair ,val)))))
+
+(def-pairs ((paren . "(")
+            (bracket . "[")
+            (brace . "{")
+            (single-quote . "'")
+            (double-quote . "\"")
+            (back-quote . "`")))
+
+(bind-keys
+ :map smartparens-mode-map
+ ("C-M-a" . sp-beginning-of-sexp)
+ ("C-M-e" . sp-end-of-sexp)
+
+ ("C-<down>" . sp-down-sexp)
+ ("C-<up>"   . sp-up-sexp)
+ ("M-<down>" . sp-backward-down-sexp)
+ ("M-<up>"   . sp-backward-up-sexp)
+
+ ("C-M-f" . sp-forward-sexp)
+ ("C-M-b" . sp-backward-sexp)
+
+ ("C-M-n" . sp-next-sexp)
+ ("C-M-p" . sp-previous-sexp)
+
+ ("C-S-f" . sp-forward-symbol)
+ ("C-S-b" . sp-backward-symbol)
+
+ ("C-<right>" . sp-forward-slurp-sexp)
+ ("M-<right>" . sp-forward-barf-sexp)
+ ("C-<left>"  . sp-backward-slurp-sexp)
+ ("M-<left>"  . sp-backward-barf-sexp)
+
+ ("C-M-t" . sp-transpose-sexp)
+ ("C-M-k" . sp-kill-sexp)
+ ("C-k"   . sp-kill-hybrid-sexp)
+ ("M-k"   . sp-backward-kill-sexp)
+ ("C-M-w" . sp-copy-sexp)
+ ("C-M-d" . delete-sexp)
+
+ ("M-<backspace>" . backward-kill-word)
+ ("C-<backspace>" . sp-backward-kill-word)
+ ([remap sp-backward-kill-word] . backward-kill-word)
+
+ ("M-[" . sp-backward-unwrap-sexp)
+ ("M-]" . sp-unwrap-sexp)
+
+ ("C-x C-t" . sp-transpose-hybrid-sexp)
+
+ ("C-c ("  . wrap-with-parens)
+ ("C-c ["  . wrap-with-brackets)
+ ("C-c {"  . wrap-with-braces)
+ ("C-c '"  . wrap-with-single-quotes)
+ ("C-c \"" . wrap-with-double-quotes)
+ ("C-c _"  . wrap-with-underscores)
+ ("C-c `"  . wrap-with-back-quotes))
 
 
 
