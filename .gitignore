@@ -2,4 +2,8 @@ straight
 straight.bak
 eln-cache
 .cache
+auto-save-list
+history                                                                                              
+projectile-bookmarks.eld                                                                             
+recentf
 *~undo-tree~*
