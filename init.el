@@ -343,12 +343,12 @@
 ;;  :config
 ;;  (org-notify-start))
 ;;
-;;'(org-file-apps
-;;  '((auto-mode . emacs)
+;;'org-file-apps
+;<0;  '((auto-mode . emacs)
 ;;    (directory . emacs)
 ;;    ("\\.mm\\'" . default)
 ;;    ("\\.x?html?\\'" . system)
-;;    ("\\.pdf\\'" . system)))
+;;    ("\\.pdf\\'" . system))
 ;;
 ;;;; Wrapping to window, not quite as good as fill paragraph, but better with proportional font
 ;;;; M-q to adjust paragraph now and then
@@ -1918,8 +1918,8 @@ respectively."
  ("C-<backspace>" . sp-backward-kill-word)
  ([remap sp-backward-kill-word] . backward-kill-word)
 
- ("M-[" . sp-backward-unwrap-sexp)
- ("M-]" . sp-unwrap-sexp)
+ ;;;("M-[" . sp-backward-unwrap-sexp)
+ ;;;("M-]" . sp-unwrap-sexp)
 
  ("C-x C-t" . sp-transpose-hybrid-sexp)
 

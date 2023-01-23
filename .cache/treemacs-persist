@@ -3,3 +3,9 @@
  - path :: ~/cchat-app
 ** conferences
  - path :: ~/conferences
+** hello-meteor
+ - path :: ~/meteor-projects/hello-meteor
+** meteor-wallet
+ - path :: ~/meteor-projects/meteor-wallet
+** s-t-s
+ - path :: ~/meteor-projects/s-t-s

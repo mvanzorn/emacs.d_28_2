@@ -1,1 +1,1 @@
-("~/.emacs.d/" "~/conferences/" "~/.nvm/")
+("~/meteor-projects/s-t-s/" "~/.emacs.d/" "~/meteor-projects/meteor-wallet/" "~/meteor-projects/hello-meteor/" "~/conferences/" "~/.nvm/")

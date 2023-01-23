@@ -1,3 +1,5 @@
 straight
 straight.bak
 eln-cache
+.cache
+*~undo-tree~*
